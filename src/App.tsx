@@ -76,7 +76,7 @@ export default function App() {
       {/* Navigation / Header */}
       <header className="py-8 px-4 sm:px-10 flex justify-between items-center max-w-7xl mx-auto w-full">
         <div className="flex items-center gap-2">
-          <img src="/Game-On/logo.png" alt="Game On!" className="h-16 w-auto" />
+          <img src="/Game-On/logo.png" alt="Game On!" className="h-24 w-auto" />
         </div>
         
         <div className="flex flex-wrap items-center gap-3 mb-6">
