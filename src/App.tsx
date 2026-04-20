@@ -20,6 +20,41 @@ import { getSportsSchedule, askAI } from './services/api';
 import { cn } from './lib/utils';
 import { format } from 'date-fns';
 
+const NETWORK_STYLES: Record<string, { bg: string; label: string }> = {
+  'espn+':      { bg: '#0055A5', label: 'ESPN+' },
+  'espn2':      { bg: '#CC0000', label: 'ESPN2' },
+  'espn':       { bg: '#CC0000', label: 'ESPN'  },
+  'abc':        { bg: '#000000', label: 'ABC'   },
+  'fox':        { bg: '#003366', label: 'FOX'   },
+  'fs1':        { bg: '#003366', label: 'FS1'   },
+  'fs2':        { bg: '#003366', label: 'FS2'   },
+  'nbc':        { bg: '#FFA500', label: 'NBC'   },
+  'peacock':    { bg: '#000000', label: 'PCK'   },
+  'tnt':        { bg: '#0066CC', label: 'TNT'   },
+  'tbs':        { bg: '#FF5500', label: 'TBS'   },
+  'truetv':     { bg: '#FF5500', label: 'truTV' },
+  'mlb.tv':     { bg: '#002D72', label: 'MLB'   },
+  'nhl.tv':     { bg: '#000000', label: 'NHL'   },
+  'nba tv':     { bg: '#006BB6', label: 'NBA'   },
+  'apple':      { bg: '#000000', label: 'TV+'   },
+  'prime':      { bg: '#00A8E1', label: 'PRM'   },
+  'paramount':  { bg: '#0066FF', label: 'P+'    },
+  'nesn':       { bg: '#003087', label: 'NESN'  },
+  'yes':        { bg: '#003087', label: 'YES'   },
+  'bally':      { bg: '#E31837', label: 'BAL'   },
+  'masn':       { bg: '#C8102E', label: 'MASN'  },
+  'nfl network':{ bg: '#013369', label: 'NFL'   },
+  'amazon':     { bg: '#00A8E1', label: 'PRM'   },
+};
+
+function getNetworkStyle(name: string): { bg: string; label: string } {
+  const lower = name.toLowerCase();
+  for (const [key, style] of Object.entries(NETWORK_STYLES)) {
+    if (lower.includes(key)) return style;
+  }
+  return { bg: '#334155', label: name.substring(0, 4).toUpperCase() };
+}
+
 export default function App() {
   const [activeLeague, setActiveLeague] = useState<League>('MLB');
   const [games, setGames] = useState<Game[]>([]);
@@ -121,7 +156,7 @@ export default function App() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleAskAI()}
-                  placeholder="Ask Gemini: 'Where can I watch the Lakers tonight in CA?'"
+                  placeholder="Ask Claude: 'Where can I watch the Lakers tonight in CA?'"
                   className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-12 pr-4 focus:ring-1 focus:ring-accent-green focus:border-accent-green outline-none transition-all text-sm md:text-base"
                 />
                 <div className="absolute right-2 top-1/2 -translate-y-1/2">
@@ -208,14 +243,17 @@ export default function App() {
                     key={game.id}
                     className="immersive-card p-8 group hover:border-accent-blue/30 relative"
                   >
-                    <button 
+                    <button
                       onClick={(e) => toggleFavorite(game.id, e)}
-                      className="absolute top-4 right-4 p-2 rounded-full hover:bg-slate-100 transition-colors z-20"
+                      className={cn(
+                        "absolute top-4 right-4 flex items-center gap-1 px-3 py-1.5 rounded-full text-[10px] font-bold transition-all z-20",
+                        favoriteIds.includes(game.id)
+                          ? "bg-accent-blue text-white"
+                          : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                      )}
                     >
-                      <Star className={cn(
-                        "w-5 h-5 transition-all text-accent-blue",
-                        favoriteIds.includes(game.id) ? "fill-accent-blue scale-110" : "opacity-30 scale-100"
-                      )} />
+                      <Star className={cn("w-3 h-3", favoriteIds.includes(game.id) && "fill-white")} />
+                      {favoriteIds.includes(game.id) ? "Saved" : "Save"}
                     </button>
                     <div className="flex flex-col md:flex-row gap-8 items-center">
                       <div className="flex-1 flex items-center justify-center gap-6">
@@ -257,15 +295,11 @@ export default function App() {
                               key={provider.name}
                               className="bg-slate-50 border border-slate-100 rounded-xl p-3 flex items-center gap-3 hover:bg-slate-100 transition-colors"
                             >
-                              <div className={cn(
-                                "w-10 h-10 rounded-lg flex items-center justify-center font-black text-[10px]",
-                                provider.name.toLowerCase().includes('apple') && "bg-black",
-                                provider.name.toLowerCase().includes('espn') && "bg-[#CC0000]",
-                                provider.name.toLowerCase().includes('prime') && "bg-[#00A8E1]",
-                                provider.name.toLowerCase().includes('paramount') && "bg-[#0066FF]",
-                                !['apple', 'espn', 'prime', 'paramount'].some(k => provider.name.toLowerCase().includes(k)) && "bg-slate-800"
-                              )}>
-                                {provider.name.substring(0, 3).toUpperCase()}
+                              <div
+                                className="w-10 h-10 rounded-lg flex items-center justify-center font-black text-[10px] text-white"
+                                style={{ backgroundColor: getNetworkStyle(provider.name).bg }}
+                              >
+                                {getNetworkStyle(provider.name).label}
                               </div>
                               <div className="flex flex-col">
                                 <span className="text-[10px] opacity-60 uppercase font-bold tracking-wider">Watch on</span>
