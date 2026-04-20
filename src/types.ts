@@ -1,4 +1,4 @@
-export type League = 'MLB' | 'NFL' | 'NBA' | 'NHL' | 'Soccer' | 'UCL';
+export type League = 'MLB' | 'NFL' | 'NBA' | 'NHL' | 'Soccer' | 'UCL' | 'Golf';
 
 export interface Game {
   id: string;
@@ -8,7 +8,8 @@ export interface Game {
   startTime: string;
   streamingServices: StreamingProvider[];
   status: 'live' | 'upcoming' | 'finished';
-  competition?: string; // e.g. "Premier League" or "Champions League"
+  competition?: string;
+  isEvent?: boolean; // true for golf tournaments (not head-to-head)
 }
 
 export interface StreamingProvider {
@@ -18,10 +19,11 @@ export interface StreamingProvider {
 }
 
 export const LEAGUES: { id: League; name: string }[] = [
-  { id: 'MLB', name: 'MLB' },
-  { id: 'NBA', name: 'NBA' },
-  { id: 'NHL', name: 'NHL' },
-  { id: 'Soccer', name: 'EPL' },
-  { id: 'UCL', name: 'UCL' },
-  { id: 'NFL', name: 'NFL' },
+  { id: 'MLB',    name: 'MLB'  },
+  { id: 'NBA',    name: 'NBA'  },
+  { id: 'NHL',    name: 'NHL'  },
+  { id: 'Soccer', name: 'EPL'  },
+  { id: 'UCL',    name: 'UCL'  },
+  { id: 'NFL',    name: 'NFL'  },
+  { id: 'Golf',   name: 'Golf' },
 ];

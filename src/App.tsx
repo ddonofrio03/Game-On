@@ -61,30 +61,30 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [userZip, setUserZip] = useState('20176'); // Default set to 20176
-  const [favoriteIds, setFavoriteIds] = useState<string[]>(() => {
-    const saved = localStorage.getItem('favorites');
+  const [favoriteTeams, setFavoriteTeams] = useState<string[]>(() => {
+    const saved = localStorage.getItem('favoriteTeams');
     return saved ? JSON.parse(saved) : [];
   });
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem('favorites', JSON.stringify(favoriteIds));
-  }, [favoriteIds]);
+    localStorage.setItem('favoriteTeams', JSON.stringify(favoriteTeams));
+  }, [favoriteTeams]);
 
-  const toggleFavorite = (id: string, e: React.MouseEvent) => {
+  const toggleFavoriteTeam = (team: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    setFavoriteIds(prev => 
-      prev.includes(id) ? prev.filter(fid => fid !== id) : [...prev, id]
+    setFavoriteTeams(prev =>
+      prev.includes(team) ? prev.filter(t => t !== team) : [...prev, team]
     );
   };
 
-  const filteredGames = showOnlyFavorites 
-    ? games.filter(g => favoriteIds.includes(g.id))
+  const filteredGames = showOnlyFavorites
+    ? games.filter(g => favoriteTeams.includes(g.homeTeam) || favoriteTeams.includes(g.awayTeam))
     : games;
   const [aiAnswer, setAiAnswer] = useState<string | null>(null);
   const [isAsking, setIsAsking] = useState(false);
 
-  const currentDate = new Date('2026-04-18T15:47:59-07:00');
+  const currentDate = new Date();
 
   useEffect(() => {
     fetchSchedule();
@@ -179,7 +179,7 @@ export default function App() {
                     className="overflow-hidden mt-4"
                   >
                     <div className="bg-accent-green/10 border border-accent-green/20 rounded-2xl p-5">
-                      <p className="text-slate-200 text-sm leading-relaxed">{aiAnswer}</p>
+                      <p className="text-slate-800 text-sm leading-relaxed">{aiAnswer}</p>
                       <button 
                         onClick={() => setAiAnswer(null)}
                         className="mt-3 text-[10px] font-bold uppercase tracking-widest text-accent-green/60 hover:text-accent-green"
@@ -245,35 +245,51 @@ export default function App() {
                   >
                     <div className="flex flex-col md:flex-row gap-8 items-center">
                       <div className="flex-1 flex flex-col items-center gap-4">
+                      {game.isEvent ? (
+                        <div className="text-center px-4">
+                          <div className="w-16 h-16 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-2xl">⛳</div>
+                          <div className="mt-4 font-display font-extrabold text-xl tracking-tight">{game.homeTeam}</div>
+                          <div className="mt-1 text-sm text-slate-500">{game.awayTeam}</div>
+                        </div>
+                      ) : (
                       <div className="flex items-center justify-center gap-6">
                         <div className="text-center">
                           <div className="w-16 h-16 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-xl font-bold">
                             {game.awayTeam[0]}
                           </div>
-                          <div className="mt-4 font-display font-extrabold text-xl tracking-tight">{game.awayTeam}</div>
+                          <div className="mt-3 font-display font-extrabold text-lg tracking-tight">{game.awayTeam}</div>
+                          <button
+                            onClick={(e) => toggleFavoriteTeam(game.awayTeam, e)}
+                            className={cn(
+                              "mt-2 flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold transition-all mx-auto",
+                              favoriteTeams.includes(game.awayTeam) ? "bg-accent-blue text-white" : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                            )}
+                          >
+                            <Star className={cn("w-3 h-3", favoriteTeams.includes(game.awayTeam) && "fill-white")} />
+                            {favoriteTeams.includes(game.awayTeam) ? "Following" : "Follow"}
+                          </button>
                         </div>
-                        
+
                         <div className="font-serif italic text-2xl opacity-30">vs</div>
 
                         <div className="text-center">
                           <div className="w-16 h-16 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-xl font-bold">
                             {game.homeTeam[0]}
                           </div>
-                          <div className="mt-4 font-display font-extrabold text-xl tracking-tight">{game.homeTeam}</div>
+                          <div className="mt-3 font-display font-extrabold text-lg tracking-tight">{game.homeTeam}</div>
+                          <button
+                            onClick={(e) => toggleFavoriteTeam(game.homeTeam, e)}
+                            className={cn(
+                              "mt-2 flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold transition-all mx-auto",
+                              favoriteTeams.includes(game.homeTeam) ? "bg-accent-blue text-white" : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                            )}
+                          >
+                            <Star className={cn("w-3 h-3", favoriteTeams.includes(game.homeTeam) && "fill-white")} />
+                            {favoriteTeams.includes(game.homeTeam) ? "Following" : "Follow"}
+                          </button>
                         </div>
                       </div>
-                      <button
-                        onClick={(e) => toggleFavorite(game.id, e)}
-                        className={cn(
-                          "flex items-center gap-1 px-3 py-1.5 rounded-full text-[10px] font-bold transition-all",
-                          favoriteIds.includes(game.id)
-                            ? "bg-accent-blue text-white"
-                            : "bg-slate-100 text-slate-500 hover:bg-slate-200"
-                        )}
-                      >
-                        <Star className={cn("w-3 h-3", favoriteIds.includes(game.id) && "fill-white")} />
-                        {favoriteIds.includes(game.id) ? "Saved" : "Save"}
-                      </button>
+                      )}
                       </div>
 
                       <div className="md:w-px h-20 bg-slate-100 hidden md:block" />

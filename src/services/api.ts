@@ -1,12 +1,13 @@
 import { Game } from "../types";
 
 const ESPN_ENDPOINTS: Record<string, string> = {
-  MLB: "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard",
-  NBA: "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard",
-  NHL: "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard",
-  NFL: "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard",
+  MLB:    "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard",
+  NBA:    "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard",
+  NHL:    "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard",
+  NFL:    "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard",
   Soccer: "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard",
-  UCL: "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+  UCL:    "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+  Golf:   "https://site.api.espn.com/apis/site/v2/sports/golf/pga/scoreboard",
 };
 
 function mapStatus(espnStatus: string): "live" | "upcoming" | "finished" {
@@ -25,10 +26,32 @@ export async function getSportsSchedule(league: string): Promise<Game[]> {
 
     return (data.events ?? []).map((event: any) => {
       const comp = event.competitions?.[0] ?? {};
+      const broadcasts: string[] = comp.broadcasts?.flatMap((b: any) => b.names ?? []) ?? [];
+      const services = broadcasts.length > 0
+        ? broadcasts.map((name: string) => ({ name }))
+        : [{ name: "Check local listings" }];
+
+      if (league === "Golf") {
+        const leaders = (comp.competitors ?? [])
+          .slice(0, 2)
+          .map((c: any) => c.athlete?.displayName ?? c.team?.displayName ?? "")
+          .filter(Boolean)
+          .join(" & ");
+        return {
+          id: event.id,
+          league,
+          homeTeam: event.name ?? "PGA Tournament",
+          awayTeam: leaders || "See Leaderboard",
+          startTime: comp.date ?? event.date ?? new Date().toISOString(),
+          status: mapStatus(comp.status?.type?.name ?? ""),
+          competition: event.shortName ?? event.name,
+          streamingServices: services,
+          isEvent: true,
+        } as Game;
+      }
+
       const home = comp.competitors?.find((c: any) => c.homeAway === "home");
       const away = comp.competitors?.find((c: any) => c.homeAway === "away");
-      const broadcasts: string[] = comp.broadcasts?.flatMap((b: any) => b.names ?? []) ?? [];
-
       return {
         id: event.id,
         league,
@@ -37,9 +60,7 @@ export async function getSportsSchedule(league: string): Promise<Game[]> {
         startTime: comp.date ?? event.date,
         status: mapStatus(comp.status?.type?.name ?? ""),
         competition: event.name,
-        streamingServices: broadcasts.length > 0
-          ? broadcasts.map((name: string) => ({ name }))
-          : [{ name: "Check local listings" }],
+        streamingServices: services,
       } as Game;
     });
   } catch (error) {
