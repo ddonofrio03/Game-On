@@ -16,7 +16,7 @@ import {
   Star
 } from 'lucide-react';
 import { LEAGUES, League, Game } from './types';
-import { getSportsSchedule, askAI } from './services/gemini';
+import { getSportsSchedule, askAI } from './services/api';
 import { cn } from './lib/utils';
 import { format } from 'date-fns';
 
@@ -57,7 +57,7 @@ export default function App() {
 
   const fetchSchedule = async () => {
     setLoading(true);
-    const data = await getSportsSchedule(activeLeague, currentDate.toISOString());
+    const data = await getSportsSchedule(activeLeague);
     setGames(data);
     setLoading(false);
   };

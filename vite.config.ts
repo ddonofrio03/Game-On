@@ -9,7 +9,7 @@ export default defineConfig(({mode}) => {
     base: '/Game-On/',
     plugins: [react(), tailwindcss()],
     define: {
-      'process.env.GEMINI_API_KEY': JSON.stringify(process.env.GEMINI_API_KEY || env.GEMINI_API_KEY),
+      'process.env.ANTHROPIC_API_KEY': JSON.stringify(process.env.ANTHROPIC_API_KEY || env.ANTHROPIC_API_KEY),
     },
     resolve: {
       alias: {
