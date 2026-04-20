@@ -101,7 +101,7 @@ export default function App() {
     if (!searchQuery.trim()) return;
     setIsAsking(true);
     setAiAnswer(null);
-    const answer = await askAI(searchQuery, userZip, currentDate.toISOString());
+    const answer = await askAI(searchQuery, userZip, currentDate.toISOString(), games);
     setAiAnswer(answer);
     setIsAsking(false);
   };

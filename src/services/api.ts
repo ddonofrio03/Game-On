@@ -48,8 +48,12 @@ export async function getSportsSchedule(league: string): Promise<Game[]> {
   }
 }
 
-export async function askAI(query: string, zip: string, date: string): Promise<string> {
+export async function askAI(query: string, zip: string, date: string, games: Game[]): Promise<string> {
   try {
+    const gameContext = games.length > 0
+      ? games.map(g => `${g.awayTeam} vs ${g.homeTeam} (${g.league}) at ${new Date(g.startTime).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})} — Watch on: ${g.streamingServices.map(s => s.name).join(', ')}`).join('\n')
+      : "No games currently loaded.";
+
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
@@ -63,10 +67,15 @@ export async function askAI(query: string, zip: string, date: string): Promise<s
         max_tokens: 300,
         messages: [{
           role: "user",
-          content: `Question about sports streaming: ${query}
-Current date: ${date}. User ZIP: ${zip}.
-Answer concisely — which streaming services or TV channels carry this game/league?
-Mention RSNs (YES Network, NESN, Bally Sports, etc.) if relevant to the market.`,
+          content: `You are a sports streaming assistant. Answer based on the real game data below.
+User ZIP: ${zip}. Date: ${date}.
+
+TODAY'S GAMES (from ESPN):
+${gameContext}
+
+User question: ${query}
+
+Answer concisely using the game data above. If the team they asked about is listed, tell them exactly when and where to watch. Also mention RSNs (YES Network, NESN, Bally Sports, MSG, etc.) relevant to their ZIP if applicable.`,
         }],
       }),
     });
