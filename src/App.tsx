@@ -20,6 +20,42 @@ import { getSportsSchedule, askAI } from './services/api';
 import { cn } from './lib/utils';
 import { format } from 'date-fns';
 
+const NETWORK_URLS: Record<string, string> = {
+  'espn+':       'https://plus.espn.com',
+  'espn2':       'https://www.espn.com/watch',
+  'espn':        'https://www.espn.com/watch',
+  'abc':         'https://abc.com/watch-live',
+  'fox':         'https://www.fox.com/live',
+  'fs1':         'https://www.foxsports.com/live',
+  'fs2':         'https://www.foxsports.com/live',
+  'nbc':         'https://www.nbc.com/live',
+  'peacock':     'https://www.peacocktv.com',
+  'tnt':         'https://watch.tntdrama.com',
+  'tbs':         'https://www.tbs.com/watchtbs',
+  'truetv':      'https://www.trutv.com/watchtrutv',
+  'mlb.tv':      'https://www.mlb.com/tv',
+  'nhl.tv':      'https://www.nhl.com/tv',
+  'nba tv':      'https://www.nba.com/watch',
+  'apple':       'https://tv.apple.com',
+  'prime':       'https://www.amazon.com/primevideo',
+  'amazon':      'https://www.amazon.com/primevideo',
+  'paramount':   'https://www.paramountplus.com',
+  'nfl network': 'https://www.nfl.com/network',
+  'nesn':        'https://nesn.com/live',
+  'yes':         'https://yesnetwork.com',
+  'bally':       'https://www.ballysports.com',
+  'masn':        'https://www.masnsports.com',
+  'golf channel':'https://www.golfchannel.com/live',
+};
+
+function getNetworkUrl(name: string): string {
+  const lower = name.toLowerCase();
+  for (const [key, url] of Object.entries(NETWORK_URLS)) {
+    if (lower.includes(key)) return url;
+  }
+  return `https://www.google.com/search?q=${encodeURIComponent(name + ' live stream')}`;
+}
+
 const NETWORK_STYLES: Record<string, { bg: string; label: string }> = {
   'espn+':      { bg: '#0055A5', label: 'ESPN+' },
   'espn2':      { bg: '#CC0000', label: 'ESPN2' },
@@ -309,9 +345,12 @@ export default function App() {
 
                         <div className="flex flex-col gap-2">
                           {game.streamingServices.map((provider) => (
-                            <div 
+                            <a
                               key={provider.name}
-                              className="bg-slate-50 border border-slate-100 rounded-xl p-3 flex items-center gap-3 hover:bg-slate-100 transition-colors"
+                              href={getNetworkUrl(provider.name)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="bg-slate-50 border border-slate-100 rounded-xl p-3 flex items-center gap-3 hover:bg-slate-100 transition-colors no-underline"
                             >
                               <div
                                 className="w-10 h-10 rounded-lg flex items-center justify-center font-black text-[10px] text-white"
@@ -324,7 +363,7 @@ export default function App() {
                                 <span className="text-xs font-bold">{provider.name}</span>
                               </div>
                               <ExternalLink className="w-3 h-3 ml-auto opacity-30" />
-                            </div>
+                            </a>
                           ))}
                         </div>
                       </div>
