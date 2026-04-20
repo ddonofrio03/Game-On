@@ -6,7 +6,7 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 export async function askAI(query: string, zip: string, date: string): Promise<string> {
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-2.0-flash",
       contents: `User question about sports streaming: ${query}.
       Current Date: ${date}.
       User Location ZIP: ${zip}.
@@ -23,7 +23,7 @@ export async function askAI(query: string, zip: string, date: string): Promise<s
 export async function getSportsSchedule(league: string, date: string): Promise<Game[]> {
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-2.0-flash",
       contents: `Generate a realistic schedule for ${league} on ${date}. 
       Include 5-10 games. For soccer (league: Soccer), include Premier League games. For UCL, include Champions League.
       Make sure to include realistic streaming services (e.g., ESPN+, Peacock, Paramount+, Apple TV, Amazon Prime, local RSNs, TNT, ABC).
