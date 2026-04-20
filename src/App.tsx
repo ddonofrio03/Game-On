@@ -243,20 +243,9 @@ export default function App() {
                     key={game.id}
                     className="immersive-card p-8 group hover:border-accent-blue/30 relative"
                   >
-                    <button
-                      onClick={(e) => toggleFavorite(game.id, e)}
-                      className={cn(
-                        "absolute top-4 right-4 flex items-center gap-1 px-3 py-1.5 rounded-full text-[10px] font-bold transition-all z-20",
-                        favoriteIds.includes(game.id)
-                          ? "bg-accent-blue text-white"
-                          : "bg-slate-100 text-slate-500 hover:bg-slate-200"
-                      )}
-                    >
-                      <Star className={cn("w-3 h-3", favoriteIds.includes(game.id) && "fill-white")} />
-                      {favoriteIds.includes(game.id) ? "Saved" : "Save"}
-                    </button>
                     <div className="flex flex-col md:flex-row gap-8 items-center">
-                      <div className="flex-1 flex items-center justify-center gap-6">
+                      <div className="flex-1 flex flex-col items-center gap-4">
+                      <div className="flex items-center justify-center gap-6">
                         <div className="text-center">
                           <div className="w-16 h-16 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-xl font-bold">
                             {game.awayTeam[0]}
@@ -272,6 +261,19 @@ export default function App() {
                           </div>
                           <div className="mt-4 font-display font-extrabold text-xl tracking-tight">{game.homeTeam}</div>
                         </div>
+                      </div>
+                      <button
+                        onClick={(e) => toggleFavorite(game.id, e)}
+                        className={cn(
+                          "flex items-center gap-1 px-3 py-1.5 rounded-full text-[10px] font-bold transition-all",
+                          favoriteIds.includes(game.id)
+                            ? "bg-accent-blue text-white"
+                            : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                        )}
+                      >
+                        <Star className={cn("w-3 h-3", favoriteIds.includes(game.id) && "fill-white")} />
+                        {favoriteIds.includes(game.id) ? "Saved" : "Save"}
+                      </button>
                       </div>
 
                       <div className="md:w-px h-20 bg-slate-100 hidden md:block" />
