@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CalendarDays, Home, MessageSquare, Star, Trophy } from "lucide-react";
+import { CalendarDays, MessageSquare, Radio, Star, Trophy } from "lucide-react";
 import { Logo } from "./logo";
 import { cn } from "@/lib/cn";
 
 const NAV = [
-  { href: "/today", label: "Today", icon: Home },
   { href: "/scores", label: "Scores", icon: Trophy },
+  { href: "/live", label: "Live Now", icon: Radio },
   { href: "/schedule", label: "Schedule", icon: CalendarDays },
   { href: "/teams", label: "My Teams", icon: Star },
 ];
@@ -19,7 +19,7 @@ export function Sidebar({ onAskClaude }: { onAskClaude?: () => void }) {
   return (
     <aside className="sticky top-0 hidden h-svh w-60 shrink-0 flex-col border-r border-border-base bg-bg-panel/60 lg:flex">
       <div className="px-5 pt-5 pb-3">
-        <Link href="/today" aria-label="Game On home" className="block">
+        <Link href="/scores" aria-label="Game On home" className="block">
           <Logo bare className="h-10 w-auto" />
         </Link>
       </div>
