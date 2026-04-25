@@ -1,7 +1,8 @@
 import { format } from "date-fns";
-import { Tv } from "lucide-react";
+import { ExternalLink, Tv } from "lucide-react";
 import type { Game, TeamRef } from "@/types/game";
 import { cn } from "@/lib/cn";
+import { watchUrlFor } from "@/lib/watch-links";
 import { LeaguePill } from "./league-pill";
 
 function TeamRow({ team, isWinner, isLive }: { team: TeamRef; isWinner?: boolean; isLive?: boolean }) {
@@ -91,19 +92,35 @@ export function GameCard({ game }: { game: Game }) {
       {game.broadcasts.length > 0 ? (
         <div className="flex flex-wrap items-center gap-1.5 border-t border-border-base/60 bg-bg-base/40 px-3.5 py-2">
           <Tv className="size-3 text-text-tertiary" />
-          {game.broadcasts.map((b) => (
-            <span
-              key={b.name}
-              className={cn(
-                "rounded border px-1.5 py-0.5 text-[10px] uppercase tracking-wider",
-                b.onYouTubeTV
-                  ? "border-led-amber/40 bg-led-amber-deep text-led-amber-soft"
-                  : "border-border-base bg-bg-elevated text-text-secondary",
-              )}
-            >
-              {b.name}
-            </span>
-          ))}
+          {game.broadcasts.map((b) => {
+            const url = watchUrlFor(b.name, game.league, game.id);
+            const baseChip = cn(
+              "inline-flex items-center gap-1 rounded border px-1.5 py-0.5 text-[10px] uppercase tracking-wider",
+              b.onYouTubeTV
+                ? "border-led-amber/40 bg-led-amber-deep text-led-amber-soft"
+                : "border-border-base bg-bg-elevated text-text-secondary",
+            );
+            if (url) {
+              return (
+                <a
+                  key={b.name}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={cn(baseChip, "transition-colors hover:border-led-amber-dim hover:text-text-primary")}
+                  title={`Watch on ${b.name}`}
+                >
+                  {b.name}
+                  <ExternalLink className="size-2.5 opacity-60" />
+                </a>
+              );
+            }
+            return (
+              <span key={b.name} className={baseChip} title="Check local listings">
+                {b.name}
+              </span>
+            );
+          })}
         </div>
       ) : null}
     </div>
