@@ -77,13 +77,25 @@ body {
 /* Scoreboard surfaces — kept DARK on purpose. They're the "panels" hanging on
    the light wall (hero, login card, no-favorites empty state). Dot pattern +
    subtle scanline for the LED feel. */
+.dot-matrix,
+.scoreboard-screen {
+  /* Inside dark scoreboard panels, override the text-color tokens so any
+     `text-text-{primary,secondary,tertiary}` Tailwind utility used inside reads
+     correctly on a near-black surface instead of the cream-bg defaults. */
+  --text-primary: #f5f3ec;
+  --text-secondary: #c8c1ae;
+  --text-tertiary: #8e8676;
+  --border-base: #2c2a26;
+  --border-strong: #3f3c36;
+}
+
 .dot-matrix {
   background-color: #050608;
   background-image:
     radial-gradient(circle at 50% 50%, rgba(255, 177, 0, 0.05) 1px, transparent 1.6px);
   background-size: 8px 8px;
   background-position: 0 0;
-  color: #f3f4f6;
+  color: var(--text-primary);
 }
 
 .scoreboard-screen {
@@ -93,7 +105,7 @@ body {
     radial-gradient(circle at 50% 50%, rgba(255, 177, 0, 0.06) 1px, transparent 1.6px),
     linear-gradient(rgba(255, 255, 255, 0.018) 50%, transparent 50%);
   background-size: 8px 8px, 100% 3px;
-  color: #f3f4f6;
+  color: var(--text-primary);
 }
 .scoreboard-screen::after {
   content: "";
