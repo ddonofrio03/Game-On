@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Logo } from "@/components/logo";
 import { LoginForm } from "./login-form";
 import { isSupabaseConfigured } from "@/lib/supabase/server";
@@ -18,7 +19,9 @@ export default function LoginPage() {
 
           <div className="mt-6">
             {configured ? (
-              <LoginForm />
+              <Suspense fallback={<div className="h-24" />}>
+                <LoginForm />
+              </Suspense>
             ) : (
               <div className="rounded-md border border-led-amber/30 bg-led-amber-deep/40 p-4 text-xs text-led-amber-soft">
                 Auth isn&apos;t configured yet. Add{" "}
