@@ -10,7 +10,7 @@ import { cn } from "@/lib/cn";
 // SMTP / signup flow. Page, API routes, and Supabase schema are intact —
 // re-add { href: "/teams", label: "My Teams", icon: Star } here when ready.
 const NAV = [
-  { href: "/scores", label: "Scores", icon: Trophy },
+  { href: "/scores", label: "Today's Games", icon: Trophy },
   { href: "/live", label: "Live Now", icon: Radio },
   { href: "/schedule", label: "Schedule", icon: CalendarDays },
 ];

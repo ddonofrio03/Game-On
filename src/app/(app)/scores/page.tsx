@@ -21,7 +21,7 @@ export default async function ScoresPage({
 
   return (
     <>
-      <TopBar title="Scores" />
+      <TopBar title="Today's Games" />
       <main className="flex-1 space-y-5 px-4 py-6 lg:px-8">
         <LeagueFilter selected={selected} />
         <GameList games={filtered} emptyMessage="No games for this league today." />

@@ -14,9 +14,26 @@ const silkscreen = Silkscreen({
 });
 
 export const metadata: Metadata = {
-  title: "Game On!",
-  description: "Find where every game is on. Live scores, schedules, streaming.",
-  icons: { icon: "/favicon.ico" },
+  metadataBase: new URL("https://game-on-three.vercel.app"),
+  title: {
+    default: "Game On!",
+    template: "%s · Game On!",
+  },
+  description: "Live sports scores, schedules, and where to watch every game across MLB, NFL, NBA, NHL, EPL, UCL, and MLS.",
+  applicationName: "Game On!",
+  openGraph: {
+    title: "Game On!",
+    description: "Live sports scores, schedules, and where to watch every game.",
+    url: "https://game-on-three.vercel.app",
+    siteName: "Game On!",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Game On!",
+    description: "Live sports scores, schedules, and where to watch every game.",
+  },
 };
 
 export default function RootLayout({
