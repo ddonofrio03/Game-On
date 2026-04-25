@@ -1,39 +1,52 @@
 @import "tailwindcss";
 
 :root {
-  --bg-base: #07080a;
-  --bg-panel: #101216;
-  --bg-elevated: #181b22;
-  --border-base: #23262e;
-  --border-strong: #353945;
+  /* Light, sports-bar surface — warm cream wall the dark scoreboards hang on */
+  --bg-base: #f6efde;
+  --bg-panel: #fbf6e8;
+  --bg-elevated: #ffffff;
+  --border-base: #e5dcc1;
+  --border-strong: #c9bd99;
 
+  /* Scoreboard surface palette (kept for the few dark accent panels) */
+  --scoreboard-bg: #07080a;
+  --scoreboard-bg-soft: #101216;
+
+  /* Amber tokens.
+     - --led-amber           bright LED, used INSIDE dark scoreboard panels
+     - --led-amber-soft      dark "ink" amber, readable on cream
+     - --led-amber-deep      light amber tint, for active-state backgrounds
+     - --led-amber-dim       mid amber, for icons and borders on cream */
   --led-amber: #ffb100;
-  --led-amber-soft: #ffc94c;
-  --led-amber-dim: #4a3300;
-  --led-amber-deep: #1a1100;
+  --led-amber-soft: #a35400;
+  --led-amber-deep: #fef0c7;
+  --led-amber-dim: #d97706;
   --led-glow: 0 0 12px rgba(255, 177, 0, 0.55), 0 0 28px rgba(255, 177, 0, 0.25);
   --led-glow-soft: 0 0 8px rgba(255, 177, 0, 0.4);
 
-  --led-red: #ff3b3b;
-  --led-green: #21d973;
-  --led-blue: #3b82f6;
+  /* Status colors readable on cream */
+  --led-red: #b1120e;
+  --led-green: #137a3a;
+  --led-blue: #1d4ed8;
 
-  --text-primary: #f3f4f6;
-  --text-secondary: #9aa0aa;
-  --text-tertiary: #5a606b;
+  /* Type colors (warm, not stark) */
+  --text-primary: #1a1408;
+  --text-secondary: #6b6048;
+  --text-tertiary: #968a6e;
 }
 
 @theme inline {
   --color-bg-base: var(--bg-base);
   --color-bg-panel: var(--bg-panel);
   --color-bg-elevated: var(--bg-elevated);
+  --color-bg-scoreboard: var(--scoreboard-bg);
   --color-border-base: var(--border-base);
   --color-border-strong: var(--border-strong);
 
   --color-led-amber: var(--led-amber);
   --color-led-amber-soft: var(--led-amber-soft);
-  --color-led-amber-dim: var(--led-amber-dim);
   --color-led-amber-deep: var(--led-amber-deep);
+  --color-led-amber-dim: var(--led-amber-dim);
   --color-led-red: var(--led-red);
   --color-led-green: var(--led-green);
   --color-led-blue: var(--led-blue);
@@ -56,21 +69,23 @@ body {
   font-family: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   background-image:
-    radial-gradient(1200px 800px at 50% -10%, rgba(255, 177, 0, 0.04), transparent 60%),
-    radial-gradient(900px 600px at 110% 110%, rgba(59, 130, 246, 0.05), transparent 60%);
+    radial-gradient(1200px 800px at 50% -10%, rgba(217, 119, 6, 0.05), transparent 60%),
+    radial-gradient(900px 600px at 110% 110%, rgba(177, 18, 14, 0.04), transparent 60%);
   background-attachment: fixed;
 }
 
-/* Scoreboard dot-matrix surface */
+/* Scoreboard surfaces — kept DARK on purpose. They're the "panels" hanging on
+   the light wall (hero, login card, no-favorites empty state). Dot pattern +
+   subtle scanline for the LED feel. */
 .dot-matrix {
   background-color: #050608;
   background-image:
     radial-gradient(circle at 50% 50%, rgba(255, 177, 0, 0.05) 1px, transparent 1.6px);
   background-size: 8px 8px;
   background-position: 0 0;
+  color: #f3f4f6;
 }
 
-/* Subtle scanline + noise on the most "screen-like" surfaces */
 .scoreboard-screen {
   position: relative;
   background-color: #050608;
@@ -78,6 +93,7 @@ body {
     radial-gradient(circle at 50% 50%, rgba(255, 177, 0, 0.06) 1px, transparent 1.6px),
     linear-gradient(rgba(255, 255, 255, 0.018) 50%, transparent 50%);
   background-size: 8px 8px, 100% 3px;
+  color: #f3f4f6;
 }
 .scoreboard-screen::after {
   content: "";
@@ -88,22 +104,44 @@ body {
   border-radius: inherit;
 }
 
+/* Default LED-style headings — readable on the cream surface */
 .led-text {
-  color: var(--led-amber);
-  text-shadow: var(--led-glow-soft);
+  color: var(--led-amber-soft);
   letter-spacing: 0.05em;
 }
 .led-text-strong {
   color: var(--led-amber-soft);
-  text-shadow: var(--led-glow);
+  letter-spacing: 0.05em;
+  font-weight: 700;
 }
 .led-text-red {
   color: var(--led-red);
-  text-shadow: 0 0 10px rgba(255, 59, 59, 0.55);
 }
 .led-text-green {
   color: var(--led-green);
-  text-shadow: 0 0 10px rgba(33, 217, 115, 0.55);
+}
+
+/* When the same heading is INSIDE a dark scoreboard panel, light it up like
+   a real LED with the amber glow. */
+.scoreboard-screen .led-text,
+.dot-matrix .led-text {
+  color: var(--led-amber);
+  text-shadow: var(--led-glow-soft);
+}
+.scoreboard-screen .led-text-strong,
+.dot-matrix .led-text-strong {
+  color: #ffd766;
+  text-shadow: var(--led-glow);
+}
+.scoreboard-screen .led-text-red,
+.dot-matrix .led-text-red {
+  color: #ff5b5b;
+  text-shadow: 0 0 10px rgba(255, 91, 91, 0.55);
+}
+.scoreboard-screen .led-text-green,
+.dot-matrix .led-text-green {
+  color: #34d97c;
+  text-shadow: 0 0 10px rgba(52, 217, 124, 0.55);
 }
 
 .led-pulse {
@@ -114,7 +152,6 @@ body {
   50% { opacity: 0.55; }
 }
 
-/* Hide scrollbar but keep functionality */
 .scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
 .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
 .scrollbar-thin::-webkit-scrollbar-thumb {

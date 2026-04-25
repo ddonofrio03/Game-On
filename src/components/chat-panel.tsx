@@ -114,7 +114,7 @@ export function ChatPanel({ open, onClose }: { open: boolean; onClose: () => voi
       >
         <header className="flex items-center justify-between border-b border-border-base px-4 py-3">
           <div className="flex items-center gap-2">
-            <MessageSquare className="size-4 text-led-amber" />
+            <MessageSquare className="size-4 text-led-amber-soft" />
             <h2 className="font-display text-sm uppercase tracking-[0.25em] led-text">Ask Claude</h2>
           </div>
           <button
@@ -205,7 +205,7 @@ function Message({ msg, streaming }: { msg: Msg; streaming: boolean }) {
       <div className="text-sm leading-relaxed text-text-primary whitespace-pre-wrap">
         {msg.content}
         {streaming && msg.content.length === 0 ? (
-          <span className="inline-block h-3 w-2 animate-pulse bg-led-amber/60 align-middle" />
+          <span className="inline-block h-3 w-2 animate-pulse bg-led-amber-soft/70 align-middle" />
         ) : null}
       </div>
     </div>
