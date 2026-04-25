@@ -2,15 +2,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CalendarDays, MessageSquare, Radio, Star, Trophy } from "lucide-react";
+import { CalendarDays, MessageSquare, Radio, Trophy } from "lucide-react";
 import { Logo } from "./logo";
 import { cn } from "@/lib/cn";
 
+// My Teams (favorites) is hidden from the menu for v1 while we sort out
+// SMTP / signup flow. Page, API routes, and Supabase schema are intact —
+// re-add { href: "/teams", label: "My Teams", icon: Star } here when ready.
 const NAV = [
   { href: "/scores", label: "Scores", icon: Trophy },
   { href: "/live", label: "Live Now", icon: Radio },
   { href: "/schedule", label: "Schedule", icon: CalendarDays },
-  { href: "/teams", label: "My Teams", icon: Star },
 ];
 
 export function Sidebar({ onAskClaude }: { onAskClaude?: () => void }) {
