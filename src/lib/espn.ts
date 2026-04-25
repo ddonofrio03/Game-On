@@ -131,12 +131,17 @@ export async function fetchLeague(
   });
 }
 
-/** Fetch every configured league in parallel. Failures yield an empty list for that league only. */
+/** Fetch every configured league in parallel. Failures yield an empty list for that league only.
+ *  Defensively filters out off-window events — ESPN's NFL endpoint, for example,
+ *  falls back to the most recent game (Super Bowl in offseason) when the requested
+ *  date has nothing scheduled. We trim anything outside the requested day. */
 export async function fetchAllLeagues(opts: { dates?: string } = {}): Promise<Game[]> {
+  const targetDate = opts.dates ?? formatDate(new Date());
   const lists = await Promise.all(
     LEAGUES.map(async (cfg) => {
       try {
-        return await fetchLeague(cfg.id, opts);
+        const games = await fetchLeague(cfg.id, { dates: targetDate });
+        return games.filter((g) => formatDate(new Date(g.startTime)) === targetDate);
       } catch (err) {
         console.error(`fetchLeague(${cfg.id}) failed`, err);
         return [];

@@ -20,7 +20,7 @@ export function Sidebar({ onAskClaude }: { onAskClaude?: () => void }) {
     <aside className="sticky top-0 hidden h-svh w-60 shrink-0 flex-col border-r border-border-base bg-bg-panel/60 lg:flex">
       <div className="px-5 pt-5 pb-3">
         <Link href="/today" aria-label="Game On home" className="block">
-          <Logo className="h-12 w-auto" />
+          <Logo bare className="h-10 w-auto" />
         </Link>
       </div>
 

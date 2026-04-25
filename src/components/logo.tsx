@@ -22,12 +22,10 @@ export function Logo({ className, bare = false }: LogoProps) {
     >
       <defs>
         <pattern id="logo-dots-lit" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
-          <rect width="10" height="10" fill="#0a0a0a" />
           <circle cx="5" cy="5" r="3.4" fill="#ffb100" />
           <circle cx="5" cy="5" r="2.0" fill="#ffe08a" />
         </pattern>
         <pattern id="logo-dots-dim" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
-          <rect width="10" height="10" fill="#0a0a0a" />
           <circle cx="5" cy="5" r="3.4" fill="#3a2a08" />
         </pattern>
         <filter id="logo-glow" x="-30%" y="-30%" width="160%" height="160%">
