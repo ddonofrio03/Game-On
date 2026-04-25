@@ -7,8 +7,8 @@ import { GameCard } from "@/components/game-card";
 export function FavoritesFeed({ favorites, games }: { favorites: Favorite[]; games: Game[] }) {
   if (favorites.length === 0) {
     return (
-      <section className="scoreboard-screen relative overflow-hidden rounded-xl border border-border-strong p-6 text-center">
-        <Star className="mx-auto size-7 text-led-amber" />
+      <section className="rounded-xl border border-border-strong bg-bg-elevated p-6 text-center">
+        <Star className="mx-auto size-7 text-led-amber-soft" />
         <h2 className="mt-2 font-display text-base uppercase tracking-[0.25em] led-text">No favorites yet</h2>
         <p className="mx-auto mt-2 max-w-md text-sm text-text-secondary">
           Star any team below to track their next game and where to watch it.

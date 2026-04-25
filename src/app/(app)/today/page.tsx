@@ -40,8 +40,8 @@ export default async function TodayPage() {
 
 function Hero({ liveCount, upcomingCount }: { liveCount: number; upcomingCount: number }) {
   return (
-    <div className="scoreboard-screen relative overflow-hidden rounded-xl border border-border-strong p-5 lg:p-7">
-      <div className="relative z-10 flex flex-wrap items-end justify-between gap-4">
+    <div className="relative overflow-hidden rounded-xl border border-border-strong bg-bg-elevated p-5 lg:p-7">
+      <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <div className="font-display text-[11px] uppercase tracking-[0.4em] led-text">
             What&apos;s on
@@ -64,7 +64,7 @@ function Hero({ liveCount, upcomingCount }: { liveCount: number; upcomingCount: 
 
 function Stat({ label, value, accent }: { label: string; value: number; accent?: boolean }) {
   return (
-    <div className="rounded-lg border border-border-base bg-bg-base/60 px-4 py-3 text-center">
+    <div className="rounded-lg border border-border-base bg-bg-base px-4 py-3 text-center">
       <div
         className={
           accent
@@ -74,7 +74,7 @@ function Stat({ label, value, accent }: { label: string; value: number; accent?:
       >
         {String(value).padStart(2, "0")}
       </div>
-      <div className="mt-0.5 text-[10px] uppercase tracking-[0.25em] text-text-tertiary">
+      <div className="mt-0.5 text-[10px] uppercase tracking-[0.25em] text-text-secondary">
         {label}
       </div>
     </div>

@@ -9,9 +9,9 @@ export default function LoginPage() {
   return (
     <main className="flex min-h-svh items-center justify-center px-4">
       <div className="w-full max-w-md">
-        <Logo className="mx-auto mb-8 h-14 w-auto" />
+        <Logo bare className="mx-auto mb-8 h-14 w-auto" />
 
-        <div className="scoreboard-screen relative overflow-hidden rounded-xl border border-border-strong p-6">
+        <div className="rounded-xl border border-border-strong bg-bg-elevated p-6">
           <h1 className="font-display text-lg uppercase tracking-[0.25em] led-text">Sign in</h1>
           <p className="mt-2 text-sm text-text-secondary">
             We&apos;ll email you a one-time link. No password, no signup.

@@ -89,7 +89,7 @@ export function MobileNav({ onAskClaude }: { onAskClaude?: () => void }) {
           type="button"
           onClick={onAskClaude}
           aria-label="Ask Claude"
-          className="fixed right-4 bottom-20 z-30 flex size-12 items-center justify-center rounded-full border border-led-amber/60 bg-bg-scoreboard text-led-amber shadow-[0_0_24px_rgba(255,177,0,0.45)] transition-transform hover:scale-105 lg:hidden"
+          className="fixed right-4 bottom-20 z-30 flex size-12 items-center justify-center rounded-full border border-led-amber-dim/60 bg-led-amber-deep text-led-amber-soft shadow-lg transition-transform hover:scale-105 lg:hidden"
         >
           <MessageSquare className="size-5" />
         </button>

@@ -20,7 +20,11 @@ export function LoginForm() {
     setErrorMessage(null);
 
     const supabase = createClient();
-    const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`;
+    // Send only the bare callback URL — keeps the Supabase Redirect URL allowlist
+    // match unambiguous (no query string to match against). The /auth/callback
+    // route defaults to /teams; if a deeper `next` is needed later we'll route
+    // it via cookie or path segment instead of a query string.
+    const redirectTo = `${window.location.origin}/auth/callback`;
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: { emailRedirectTo: redirectTo },
