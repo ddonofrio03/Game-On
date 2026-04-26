@@ -4,6 +4,8 @@ Live sports scoreboard, schedules, and where-to-watch hub. Built with Next.js 16
 
 Sports-bar / LED-dot-matrix aesthetic. Tracks MLB, NFL, NBA, NHL, EPL, UCL, and MLS.
 
+**Live at:** https://gameon.donofr.io (with `game-on-three.vercel.app` as the original Vercel URL).
+
 ## Local development
 
 ```bash

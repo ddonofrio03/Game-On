@@ -14,7 +14,7 @@ const silkscreen = Silkscreen({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://game-on-three.vercel.app"),
+  metadataBase: new URL("https://gameon.donofr.io"),
   title: {
     default: "Game On!",
     template: "%s · Game On!",
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Game On!",
     description: "Live sports scores, schedules, and where to watch every game.",
-    url: "https://game-on-three.vercel.app",
+    url: "https://gameon.donofr.io",
     siteName: "Game On!",
     locale: "en_US",
     type: "website",
