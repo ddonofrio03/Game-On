@@ -1,7 +1,7 @@
 import { fetchAllLeagues } from "@/lib/espn";
 import { LEAGUES } from "@/lib/leagues";
 import { GameList } from "@/components/game-list";
-import { LeagueFilter } from "./league-filter";
+import { LeagueFilter } from "@/components/league-filter";
 import { TopBar } from "@/components/top-bar";
 import type { LeagueId } from "@/types/game";
 
@@ -23,7 +23,7 @@ export default async function ScoresPage({
     <>
       <TopBar title="Today's Games" />
       <main className="flex-1 space-y-5 px-4 py-6 lg:px-8">
-        <LeagueFilter selected={selected} />
+        <LeagueFilter selected={selected} basePath="/scores" />
         <GameList games={filtered} emptyMessage="No games for this league today." />
       </main>
     </>

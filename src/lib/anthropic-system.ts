@@ -1,6 +1,20 @@
-import { format } from "date-fns";
 import type { Game } from "@/types/game";
 import { LEAGUE_BY_ID } from "./leagues";
+
+// Format dates/times in US Eastern so the chat sees consistent values
+// regardless of where Vercel's serverless function runs (default = UTC).
+const ET_TIME = new Intl.DateTimeFormat("en-US", {
+  timeZone: "America/New_York",
+  hour: "numeric",
+  minute: "2-digit",
+});
+const ET_DATE = new Intl.DateTimeFormat("en-US", {
+  timeZone: "America/New_York",
+  weekday: "long",
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+});
 
 export const CHAT_SYSTEM_PROMPT = `You are the Game On! sports assistant — concise, accurate, friendly, with occasional dry humor.
 
@@ -32,11 +46,11 @@ export function formatGamesContext(games: Game[]): string {
   const finished = games.filter((g) => g.status === "finished");
 
   const lines: string[] = [];
-  lines.push(`# Today's games (${format(new Date(), "EEEE, MMM d, yyyy")})`);
+  lines.push(`# Today's games (${ET_DATE.format(new Date())}, all times ET)`);
 
   function describe(g: Game) {
     const cfg = LEAGUE_BY_ID[g.league];
-    const time = format(new Date(g.startTime), "h:mm a");
+    const time = ET_TIME.format(new Date(g.startTime));
     const matchup = `${g.awayTeam.name} @ ${g.homeTeam.name}`;
     const score =
       g.homeTeam.score !== undefined && g.awayTeam.score !== undefined && g.homeTeam.score !== ""

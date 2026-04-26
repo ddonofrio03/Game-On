@@ -5,14 +5,21 @@ import { LEAGUES } from "@/lib/leagues";
 import type { LeagueId } from "@/types/game";
 import { cn } from "@/lib/cn";
 
-export function LeagueFilter({ selected }: { selected: LeagueId | null }) {
+export function LeagueFilter({
+  selected,
+  basePath,
+}: {
+  selected: LeagueId | null;
+  /** Page path the pills filter — e.g. "/scores" or "/live". */
+  basePath: string;
+}) {
   return (
     <div className="flex flex-wrap gap-2">
-      <FilterPill href="/scores" active={selected === null} label="All" />
+      <FilterPill href={basePath} active={selected === null} label="All" />
       {LEAGUES.map((l) => (
         <FilterPill
           key={l.id}
-          href={`/scores?league=${l.id}`}
+          href={`${basePath}?league=${l.id}`}
           active={selected === l.id}
           label={l.short}
           accent={l.accent}

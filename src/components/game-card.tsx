@@ -1,8 +1,8 @@
-import { format } from "date-fns";
 import { ExternalLink, Tv } from "lucide-react";
 import type { Game, TeamRef } from "@/types/game";
 import { cn } from "@/lib/cn";
 import { watchUrlFor } from "@/lib/watch-links";
+import { GameTime } from "./game-time";
 import { LeaguePill } from "./league-pill";
 
 function TeamRow({ team, isWinner, isLive }: { team: TeamRef; isWinner?: boolean; isLive?: boolean }) {
@@ -52,14 +52,12 @@ function StatusBadge({ game }: { game: Game }) {
   if (game.status === "postponed") {
     return <span className="font-display text-[11px] tracking-wider led-text-red">PPD</span>;
   }
-  // upcoming
-  const time = format(new Date(game.startTime), "h:mm a");
+  // upcoming — render in viewer's local timezone (server falls back to ET)
   return (
     <div className="text-right">
-      <div className="font-display text-[11px] tracking-wider led-text">{time}</div>
-      {game.statusDetail && game.statusDetail !== time ? (
-        <div className="text-[10px] text-text-tertiary">{game.statusDetail}</div>
-      ) : null}
+      <div className="font-display text-[11px] tracking-wider led-text">
+        <GameTime iso={game.startTime} />
+      </div>
     </div>
   );
 }
