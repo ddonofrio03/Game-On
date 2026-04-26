@@ -1,10 +1,8 @@
 import { addDays, startOfDay } from "date-fns";
 import { fetchAllLeagues, fetchTeams, formatDate } from "@/lib/espn";
-import { getFavorites } from "@/lib/favorites";
 import { LEAGUES } from "@/lib/leagues";
 import { TopBar } from "@/components/top-bar";
-import { TeamPicker } from "./team-picker";
-import { FavoritesFeed } from "./favorites-feed";
+import { TeamsClient } from "./teams-client";
 import type { Team } from "@/types/game";
 
 export const dynamic = "force-dynamic";
@@ -12,8 +10,8 @@ export const dynamic = "force-dynamic";
 const LOOKAHEAD_DAYS = 4;
 
 export default async function TeamsPage() {
-  const favorites = await getFavorites();
-
+  // All public ESPN data — no auth needed. The favorites layer is now
+  // browser-local (see useFavorites hook) and lives on the client.
   const today = startOfDay(new Date());
   const dateStrings = Array.from({ length: LOOKAHEAD_DAYS }, (_, i) => formatDate(addDays(today, i)));
 
@@ -29,8 +27,7 @@ export default async function TeamsPage() {
     <>
       <TopBar title="My Teams" />
       <main className="flex-1 space-y-8 px-4 py-6 lg:px-8">
-        <FavoritesFeed favorites={favorites} games={upcomingGames} />
-        <TeamPicker teamsByLeague={teams} initialFavoriteKeys={favorites.map((f) => `${f.league}:${f.team_id}`)} />
+        <TeamsClient teamsByLeague={teams} upcomingGames={upcomingGames} />
       </main>
     </>
   );

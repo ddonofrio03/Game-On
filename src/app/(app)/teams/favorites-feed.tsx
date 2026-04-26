@@ -1,10 +1,28 @@
 import { Star } from "lucide-react";
-import type { Favorite } from "@/lib/favorites";
+import type { StoredFavorite } from "@/lib/use-favorites";
 import type { Game } from "@/types/game";
 import { LEAGUE_BY_ID } from "@/lib/leagues";
 import { GameCard } from "@/components/game-card";
 
-export function FavoritesFeed({ favorites, games }: { favorites: Favorite[]; games: Game[] }) {
+export function FavoritesFeed({
+  favorites,
+  games,
+  hydrated,
+}: {
+  favorites: StoredFavorite[];
+  games: Game[];
+  /** False before localStorage has been read (briefly on first paint).
+   *  Used to suppress the "no favorites" empty state during the flash. */
+  hydrated: boolean;
+}) {
+  if (!hydrated) {
+    return (
+      <section className="rounded-xl border border-border-base bg-bg-panel/40 p-6 text-center text-sm text-text-tertiary">
+        Loading your teams…
+      </section>
+    );
+  }
+
   if (favorites.length === 0) {
     return (
       <section className="rounded-xl border border-border-strong bg-bg-elevated p-6 text-center">
@@ -24,13 +42,19 @@ export function FavoritesFeed({ favorites, games }: { favorites: Favorite[]; gam
         {favorites.map((fav) => {
           const cfg = LEAGUE_BY_ID[fav.league];
           const next = games
-            .filter((g) => g.league === fav.league && (g.homeTeam.id === fav.team_id || g.awayTeam.id === fav.team_id))
+            .filter(
+              (g) =>
+                g.league === fav.league &&
+                (g.homeTeam.id === fav.team_id || g.awayTeam.id === fav.team_id),
+            )
             .sort((a, b) => a.startTime.localeCompare(b.startTime))[0];
+
+          const key = `${fav.league}:${fav.team_id}`;
 
           if (!next) {
             return (
               <div
-                key={fav.id}
+                key={key}
                 className="rounded-lg border border-border-base bg-bg-panel/50 px-4 py-5"
               >
                 <div className="flex items-center gap-3">
@@ -49,7 +73,7 @@ export function FavoritesFeed({ favorites, games }: { favorites: Favorite[]; gam
               </div>
             );
           }
-          return <GameCard key={fav.id} game={next} />;
+          return <GameCard key={key} game={next} />;
         })}
       </div>
     </section>

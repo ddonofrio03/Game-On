@@ -1,24 +1,22 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
-import { Loader2, Search, Star } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Search, Star } from "lucide-react";
 import { LEAGUES } from "@/lib/leagues";
 import type { LeagueId, Team } from "@/types/game";
+import type { StoredFavorite } from "@/lib/use-favorites";
 import { cn } from "@/lib/cn";
 
 type Props = {
   teamsByLeague: Record<string, Team[]>;
-  initialFavoriteKeys: string[];
+  has: (league: LeagueId, teamId: string) => boolean;
+  toggle: (fav: Omit<StoredFavorite, "added_at">) => void;
+  hydrated: boolean;
 };
 
-export function TeamPicker({ teamsByLeague, initialFavoriteKeys }: Props) {
-  const router = useRouter();
-  const [favoriteKeys, setFavoriteKeys] = useState<Set<string>>(new Set(initialFavoriteKeys));
+export function TeamPicker({ teamsByLeague, has, toggle, hydrated }: Props) {
   const [activeLeague, setActiveLeague] = useState<LeagueId>(LEAGUES[0].id);
   const [query, setQuery] = useState("");
-  const [pendingKey, setPendingKey] = useState<string | null>(null);
-  const [, startTransition] = useTransition();
 
   const teams = useMemo(() => {
     const list = teamsByLeague[activeLeague] ?? [];
@@ -31,49 +29,6 @@ export function TeamPicker({ teamsByLeague, initialFavoriteKeys }: Props) {
         t.abbreviation?.toLowerCase().includes(q),
     );
   }, [teamsByLeague, activeLeague, query]);
-
-  async function toggle(team: Team) {
-    const key = `${team.league}:${team.id}`;
-    setPendingKey(key);
-
-    if (favoriteKeys.has(key)) {
-      const res = await fetch("/api/favorites", { method: "GET" });
-      if (!res.ok) {
-        setPendingKey(null);
-        return;
-      }
-      const data = (await res.json()) as { favorites: Array<{ id: string; league: string; team_id: string }> };
-      const fav = data.favorites.find((f) => f.league === team.league && f.team_id === team.id);
-      if (fav) {
-        const del = await fetch(`/api/favorites/${fav.id}`, { method: "DELETE" });
-        if (del.ok) {
-          setFavoriteKeys((prev) => {
-            const next = new Set(prev);
-            next.delete(key);
-            return next;
-          });
-        }
-      }
-    } else {
-      const res = await fetch("/api/favorites", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          league: team.league,
-          team_id: team.id,
-          team_name: team.name,
-          team_abbreviation: team.abbreviation ?? null,
-          team_logo_url: team.logoUrl ?? null,
-        }),
-      });
-      if (res.ok) {
-        setFavoriteKeys((prev) => new Set(prev).add(key));
-      }
-    }
-
-    setPendingKey(null);
-    startTransition(() => router.refresh());
-  }
 
   return (
     <section className="space-y-4">
@@ -117,21 +72,23 @@ export function TeamPicker({ teamsByLeague, initialFavoriteKeys }: Props) {
       ) : (
         <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {teams.map((t) => {
-            const key = `${t.league}:${t.id}`;
-            const isFav = favoriteKeys.has(key);
-            const isPending = pendingKey === key;
+            const isFav = hydrated && has(t.league, t.id);
             return (
-              <li key={key}>
+              <li key={`${t.league}:${t.id}`}>
                 <button
                   type="button"
-                  onClick={() => toggle(t)}
-                  disabled={isPending}
+                  onClick={() =>
+                    toggle({
+                      league: t.league,
+                      team_id: t.id,
+                      team_name: t.name,
+                      team_abbreviation: t.abbreviation ?? null,
+                      team_logo_url: t.logoUrl ?? null,
+                    })
+                  }
                   className={cn(
                     "flex w-full items-center gap-3 rounded-md border bg-bg-panel px-3 py-2 text-left transition-colors",
-                    isFav
-                      ? "border-led-amber/50"
-                      : "border-border-base hover:border-border-strong",
-                    isPending && "opacity-60",
+                    isFav ? "border-led-amber/50" : "border-border-base hover:border-border-strong",
                   )}
                 >
                   <div className="size-8 shrink-0 overflow-hidden rounded bg-bg-elevated">
@@ -146,13 +103,12 @@ export function TeamPicker({ teamsByLeague, initialFavoriteKeys }: Props) {
                       <div className="text-[10px] uppercase tracking-wider text-text-tertiary">{t.abbreviation}</div>
                     ) : null}
                   </div>
-                  {isPending ? (
-                    <Loader2 className="size-4 animate-spin text-text-tertiary" />
-                  ) : (
-                    <Star
-                      className={cn("size-4", isFav ? "fill-led-amber text-led-amber" : "text-text-tertiary")}
-                    />
-                  )}
+                  <Star
+                    className={cn(
+                      "size-4 transition-colors",
+                      isFav ? "fill-led-amber text-led-amber" : "text-text-tertiary",
+                    )}
+                  />
                 </button>
               </li>
             );
