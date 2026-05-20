@@ -1,16 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { format, parse } from "date-fns";
+import { parseDate } from "@/lib/espn";
 import { cn } from "@/lib/cn";
 
-export function DateTabs({ dates, selected }: { dates: string[]; selected: string }) {
+// UTC because each YYYYMMDD is a calendar day, not an instant —
+// formatting in a viewer's local TZ would shift the label across the
+// date line for far-east timezones.
+const DOW = new Intl.DateTimeFormat("en-US", { timeZone: "UTC", weekday: "short" });
+const DAY = new Intl.DateTimeFormat("en-US", { timeZone: "UTC", day: "numeric" });
+const MONTH = new Intl.DateTimeFormat("en-US", { timeZone: "UTC", month: "short" });
+
+export function DateTabs({
+  dates,
+  selected,
+  today,
+}: {
+  dates: string[];
+  selected: string;
+  today: string;
+}) {
   return (
     <div className="scrollbar-thin -mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:px-0">
       {dates.map((d) => {
-        const dt = parse(d, "yyyyMMdd", new Date());
+        const dt = parseDate(d);
         const isSelected = d === selected;
-        const isToday = format(new Date(), "yyyyMMdd") === d;
+        const isToday = d === today;
         return (
           <Link
             key={d}
@@ -23,11 +38,11 @@ export function DateTabs({ dates, selected }: { dates: string[]; selected: strin
             )}
           >
             <span className="text-[10px] uppercase tracking-[0.2em]">
-              {isToday ? "Today" : format(dt, "EEE")}
+              {isToday ? "Today" : DOW.format(dt)}
             </span>
-            <span className="font-display text-lg">{format(dt, "d")}</span>
+            <span className="font-display text-lg">{DAY.format(dt)}</span>
             <span className="text-[10px] uppercase tracking-[0.2em] text-text-tertiary">
-              {format(dt, "MMM")}
+              {MONTH.format(dt)}
             </span>
           </Link>
         );

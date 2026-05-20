@@ -8,12 +8,14 @@ export function FavoritesFeed({
   favorites,
   games,
   hydrated,
+  tz,
 }: {
   favorites: StoredFavorite[];
   games: Game[];
   /** False before localStorage has been read (briefly on first paint).
    *  Used to suppress the "no favorites" empty state during the flash. */
   hydrated: boolean;
+  tz: string;
 }) {
   if (!hydrated) {
     return (
@@ -73,7 +75,7 @@ export function FavoritesFeed({
               </div>
             );
           }
-          return <GameCard key={key} game={next} />;
+          return <GameCard key={key} game={next} tz={tz} />;
         })}
       </div>
     </section>

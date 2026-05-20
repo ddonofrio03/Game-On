@@ -188,3 +188,23 @@ const ET_YYYYMMDD = new Intl.DateTimeFormat("en-CA", {
 export function formatDate(d: Date): string {
   return ET_YYYYMMDD.format(d).replaceAll("-", "");
 }
+
+/** Parse a YYYYMMDD calendar day into a noon-UTC Date.
+ *  Noon UTC lands on the same calendar day in every timezone except the
+ *  far-east edges (Auckland, etc.), so it's a safe handle for rendering a
+ *  weekday/month label without timezone drift. */
+export function parseDate(yyyymmdd: string): Date {
+  return new Date(
+    `${yyyymmdd.slice(0, 4)}-${yyyymmdd.slice(4, 6)}-${yyyymmdd.slice(6, 8)}T12:00:00Z`,
+  );
+}
+
+/** N consecutive ET calendar days starting today (inclusive), as YYYYMMDD. */
+export function etDateRange(count: number): string[] {
+  const start = parseDate(formatDate(new Date()));
+  return Array.from({ length: count }, (_, i) => {
+    const d = new Date(start);
+    d.setUTCDate(d.getUTCDate() + i);
+    return formatDate(d);
+  });
+}

@@ -1,5 +1,11 @@
 import { AppShell } from "@/components/app-shell";
+import { TimezoneSync } from "@/components/timezone-sync";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
-  return <AppShell>{children}</AppShell>;
+  return (
+    <>
+      <TimezoneSync />
+      <AppShell>{children}</AppShell>
+    </>
+  );
 }
