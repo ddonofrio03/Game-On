@@ -1,5 +1,6 @@
 import { fetchAllLeagues } from "@/lib/espn";
 import { LEAGUES } from "@/lib/leagues";
+import { getDisplayTimezone } from "@/lib/timezone";
 import { GameList } from "@/components/game-list";
 import { LeagueFilter } from "@/components/league-filter";
 import { TopBar } from "@/components/top-bar";
@@ -16,7 +17,7 @@ export default async function LivePage({
   const { league } = await searchParams;
   const selected = (LEAGUES.find((l) => l.id === league)?.id ?? null) as LeagueId | null;
 
-  const games = await fetchAllLeagues();
+  const [games, tz] = await Promise.all([fetchAllLeagues(), getDisplayTimezone()]);
   const live = games.filter((g) => g.status === "live");
   const filtered = selected ? live.filter((g) => g.league === selected) : live;
 
@@ -33,6 +34,7 @@ export default async function LivePage({
         </div>
         <GameList
           games={filtered}
+          tz={tz}
           emptyMessage={
             selected
               ? "Nothing live in this league right now."

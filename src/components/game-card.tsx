@@ -34,7 +34,7 @@ function TeamRow({ team, isWinner, isLive }: { team: TeamRef; isWinner?: boolean
   );
 }
 
-function StatusBadge({ game }: { game: Game }) {
+function StatusBadge({ game, tz }: { game: Game; tz: string }) {
   if (game.status === "live") {
     return (
       <div className="flex items-center gap-1.5">
@@ -56,13 +56,13 @@ function StatusBadge({ game }: { game: Game }) {
   return (
     <div className="text-right">
       <div className="font-display text-[11px] tracking-wider led-text">
-        <GameTime iso={game.startTime} />
+        <GameTime iso={game.startTime} tz={tz} />
       </div>
     </div>
   );
 }
 
-export function GameCard({ game }: { game: Game }) {
+export function GameCard({ game, tz }: { game: Game; tz: string }) {
   const homeNum = Number(game.homeTeam.score ?? "");
   const awayNum = Number(game.awayTeam.score ?? "");
   const showWinners = game.status === "finished" && Number.isFinite(homeNum) && Number.isFinite(awayNum);
@@ -79,7 +79,7 @@ export function GameCard({ game }: { game: Game }) {
             <span className="truncate text-[11px] text-text-tertiary">{game.competition}</span>
           ) : null}
         </div>
-        <StatusBadge game={game} />
+        <StatusBadge game={game} tz={tz} />
       </div>
 
       <div className="px-3.5 pt-1.5 pb-2">
