@@ -174,10 +174,17 @@ export async function fetchTeams(league: LeagueId): Promise<Team[]> {
     .sort((a: Team, b: Team) => a.name.localeCompare(b.name));
 }
 
-/** YYYYMMDD in user's local time. */
+// ESPN's scoreboard treats a "day" as a US Eastern calendar day, and our
+// server runtime is UTC — so formatting in server-local time rolled the
+// page over to tomorrow once it passed 8pm ET.
+const ET_YYYYMMDD = new Intl.DateTimeFormat("en-CA", {
+  timeZone: "America/New_York",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+
+/** YYYYMMDD for the given instant in US Eastern (matches ESPN's day boundary). */
 export function formatDate(d: Date): string {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}${m}${day}`;
+  return ET_YYYYMMDD.format(d).replaceAll("-", "");
 }
